@@ -1,5 +1,9 @@
 Revision history for Test-Deep
 
+{{$NEXT}}
+
+          Add prototypes to user-facing subs, to catch some obvious errors.
+
 0.109     2012-02-16
 
           UNIVERSAL::isa and UNIVERAL::can are no longer called as functions:

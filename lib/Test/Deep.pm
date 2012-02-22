@@ -113,7 +113,7 @@ while (my ($pkg, $name) = each %constructors)
 # imported us and UNIVERSAL::isa is being called on that class.
 # Luckily our isa always expects 1 argument and U::isa always expects
 # 2, so we can figure out (assuming the caller is not buggy).
-sub isa
+sub isa($;$)
 {
 	if (@_ == 1)
 	{
@@ -125,7 +125,7 @@ sub isa
 	}
 }
 
-sub cmp_deeply
+sub cmp_deeply($$;$)
 {
 	my ($d1, $d2, $name) = @_;
 
@@ -140,7 +140,7 @@ sub cmp_deeply
 	return $ok;
 }
 
-sub cmp_details
+sub cmp_details($$)
 {
 	my ($d1, $d2) = @_;
 
@@ -153,7 +153,7 @@ sub cmp_details
 	return ($ok, $Stack);
 }
 
-sub eq_deeply
+sub eq_deeply($$)
 {
 	my ($d1, $d2) = @_;
 
@@ -162,7 +162,8 @@ sub eq_deeply
 	return $ok
 }
 
-sub eq_deeply_cache
+# FIXME: $name argument is ignored
+sub eq_deeply_cache($$;$)
 {
 	# this is like cross between eq_deeply and descend(). It doesn't start
 	# with a new $CompareCache but if the comparison fails it will leave
@@ -183,7 +184,7 @@ sub eq_deeply_cache
 	return $ok;
 }
 
-sub deep_diag
+sub deep_diag($)
 {
 	my $stack = shift;
 	# ick! incArrow and other things expect the stack has to be visible
@@ -255,7 +256,7 @@ sub render_val
 	return $rendered;
 }
 
-sub descend
+sub descend($$)
 {
 	my ($d1, $d2) = @_;
 
@@ -339,7 +340,7 @@ sub descend
 	}
 }
 
-sub wrap
+sub wrap($)
 {
 	my $data = shift;
 
@@ -385,7 +386,7 @@ sub wrap
 	return $cmp;
 }
 
-sub class_base
+sub class_base($)
 {
 	my $val = shift;
 
@@ -410,20 +411,20 @@ sub class_base
 	}
 }
 
-sub render_stack
+sub render_stack($$)
 {
 	my ($var, $stack) = @_;
 
 	return $stack->render($var);
 }
 
-sub cmp_methods
+sub cmp_methods($$;$)
 {
 	local $Test::Builder::Level = $Test::Builder::Level + 1;
 	return cmp_deeply(shift, methods(@{shift()}), shift);
 }
 
-sub requireclass
+sub requireclass($)
 {
 	require Test::Deep::Class;
 
@@ -436,7 +437,7 @@ sub requireclass
 
 *useclass = \&requireclass;
 
-sub noclass
+sub noclass($)
 {
 	require Test::Deep::Class;
 
@@ -445,55 +446,55 @@ sub noclass
 	return Test::Deep::Class->new(0, $val);
 }
 
-sub set
+sub set(@)
 {
 	require Test::Deep::Set;
 
 	return Test::Deep::Set->new(1, "", @_);
 }
 
-sub supersetof
+sub supersetof(@)
 {
 	require Test::Deep::Set;
 
 	return Test::Deep::Set->new(1, "sup", @_);
 }
 
-sub subsetof
+sub subsetof(@)
 {
 	require Test::Deep::Set;
 
 	return Test::Deep::Set->new(1, "sub", @_);
 }
 
-sub cmp_set
+sub cmp_set(@)
 {
 	local $Test::Builder::Level = $Test::Builder::Level + 1;
 	return cmp_deeply(shift, set(@{shift()}), shift);
 }
 
-sub bag
+sub bag(@)
 {
 	require Test::Deep::Set;
 
 	return Test::Deep::Set->new(0, "", @_);
 }
 
-sub superbagof
+sub superbagof(@)
 {
 	require Test::Deep::Set;
 
 	return Test::Deep::Set->new(0, "sup", @_);
 }
 
-sub subbagof
+sub subbagof(@)
 {
 	require Test::Deep::Set;
 
 	return Test::Deep::Set->new(0, "sub", @_);
 }
 
-sub cmp_bag
+sub cmp_bag(@)
 {
 	local $Test::Builder::Level = $Test::Builder::Level + 1;
   my $ref = ref($_[1]) || "";
@@ -502,7 +503,7 @@ sub cmp_bag
   return cmp_deeply(shift, bag(@{shift()}), shift);
 }
 
-sub superhashof
+sub superhashof($)
 {
 	require Test::Deep::Hash;
 
@@ -511,7 +512,7 @@ sub superhashof
 	return Test::Deep::SuperHash->new($val);
 }
 
-sub subhashof
+sub subhashof($)
 {
 	require Test::Deep::Hash;
 
@@ -520,7 +521,7 @@ sub subhashof
 	return Test::Deep::SubHash->new($val);
 }
 
-sub builder
+sub builder($)
 {
 	if (@_)
 	{
